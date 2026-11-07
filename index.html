@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="CoinSplash — Balance the coin on a floating orange. Nearly impossible, and impossibly satisfying." />
+    <title>CoinSplash — Balance the Impossible</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-navy: #1A1A2E;
+            --surface-dark: #232338;
+            --gold: #FFD54F;
+            --gold-dark: #FFB300;
+            --water-blue: #4FC3F7;
+            --danger: #EF5350;
+            --text-light: #FFFFFF;
+            --text-muted: #A0A5C0;
+            --border-dark: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-navy);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* -------- Navigation -------- */
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            color: var(--gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .navbar-brand img {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* -------- Hero -------- */
+        .hero-section {
+            padding: 4rem 0 2rem 0;
+        }
+
+        .hero-headline {
+            font-size: clamp(2.8rem, 6.5vw, 4.6rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            color: var(--text-light);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+            color: var(--gold);
+            max-width: 520px;
+            line-height: 1.5;
+            margin-top: 1.2rem;
+            font-weight: 500;
+        }
+
+        .store-badge {
+            height: 48px;
+            transition: transform 0.15s ease;
+        }
+        .store-badge:hover {
+            transform: scale(1.04);
+        }
+        /* Rounded logo styling */
+        .navbar-brand .logo-img {
+            height: 42px;
+            width: 42px;
+            object-fit: cover;
+            border-radius: 10px; /* Adjust corner roundness (e.g. 10px for squircle, 50% for circle) */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Phone mockup with interactive physics canvas */
+        .phone-frame {
+            background: #0D0D1A;
+            border: 8px solid #2D2D44;
+            border-radius: 42px;
+            aspect-ratio: 9 / 19.5;
+            max-width: 300px;
+            width: 100%;
+            margin: 0 auto;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.6);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        .phone-frame canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* -------- Feature Cards -------- */
+        .features-section {
+            padding: 4rem 0;
+        }
+
+        .feature-card {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 24px;
+            padding: 2.2rem 2rem;
+            height: 100%;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--gold);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .feature-card.hero-feature {
+            background: linear-gradient(135deg, var(--surface-dark) 0%, rgba(79, 195, 247, 0.1) 100%);
+            border-color: rgba(79, 195, 247, 0.3);
+        }
+        .feature-card.hero-feature::before {
+            background: var(--water-blue);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 35px -10px rgba(0,0,0,0.4);
+            border-color: var(--gold);
+        }
+
+        .feature-card.hero-feature:hover {
+            border-color: var(--water-blue);
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: var(--text-light);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .feature-card .footnote {
+            font-size: 0.9rem;
+            color: var(--water-blue);
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        /* -------- Steps / How it works -------- */
+        .steps-section {
+            padding: 4rem 0;
+            background: rgba(0,0,0,0.15);
+        }
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--gold);
+            color: var(--bg-navy);
+            font-weight: 700;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+
+        /* -------- FAQ Section -------- */
+        .accordion-item {
+            background: var(--surface-dark) !important;
+            border: 1px solid var(--border-dark) !important;
+            color: var(--text-light) !important;
+            border-radius: 16px !important;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .accordion-button {
+            background: var(--surface-dark) !important;
+            color: var(--text-light) !important;
+            font-weight: 600;
+            box-shadow: none !important;
+            padding: 1.2rem 1.5rem;
+        }
+        .accordion-button:not(.collapsed) {
+            color: var(--gold) !important;
+            background: rgba(255, 213, 79, 0.05) !important;
+        }
+        .accordion-body {
+            color: var(--text-muted);
+            padding: 0 1.5rem 1.2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* -------- Footer -------- */
+        footer {
+            margin-top: auto;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--border-dark);
+            background: #141421;
+        }
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        footer a:hover {
+            color: var(--gold);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 576px) {
+            .hero-section {
+                padding-top: 2rem;
+                text-align: center;
+            }
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .phone-frame {
+                max-width: 240px;
+                border-width: 6px;
+                border-radius: 34px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+        <!-- Navigation -->
+        <nav class="py-3">
+            <div class="container px-4 d-flex justify-content-between align-items-center">
+            <a href="#" class="navbar-brand">
+            <img src="images/coinsplash_logo.png" 
+                    alt="CoinSplash Logo" 
+                    class="logo-img me-2" 
+                    onerror="this.style.display='none'">
+                    CoinSplash
+                </a>
+            </div>
+        </nav>
+
+    <main>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container px-4">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <h1 class="hero-headline">
+                            Balance the impossible.
+                        </h1>
+                        <p class="hero-subtitle">
+                            Nearly impossible, and impossibly satisfying.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-lg-start">
+                            <a href="#">
+                                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" class="store-badge">
+                            </a>
+                            <a href="#">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" class="store-badge">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-flex justify-content-center justify-content-lg-end">
+                        <div class="phone-frame" title="Tap to drop the coin!">
+                            <canvas id="previewCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="container px-4">
+                <div class="row g-4">
+                    <!-- Main Hero Feature: Real Physics -->
+                    <div class="col-12">
+                        <div class="feature-card hero-feature">
+                            <h3 class="fs-2 text-info"><i class="bi bi-cpu me-2"></i> Real Physics</h3>
+                            <p class="fs-5 text-light">Every drop behaves differently based on momentum, gravity, surface tension, and buoyancy. No scripted outcomes.</p>
+                        </div>
+                    </div>
+
+                    <!-- Customization Feature -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card">
+                            <h3><i class="bi bi-palette text-warning me-2"></i> Endless Customization</h3>
+                            <p>Unlock a rich assortment of balanceable objects, unique tabletop styles, custom coins, and animated background themes to personalize your game setup.</p>
+                        </div>
+                    </div>
+
+                    <!-- Progression & XP -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card">
+                            <h3><i class="bi bi-trophy text-warning me-2"></i> Earn XP &amp; Level Up</h3>
+                            <p>Gain experience on every attempt. Level up to unlock exclusive perks, higher daily coin bonuses, streak repairs, and chest multipliers.</p>
+                        </div>
+                    </div>
+
+                    <!-- Rewards & Daily Streaks -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="feature-card">
+                            <h3><i class="bi bi-gift text-warning me-2"></i> Streaks &amp; Chests</h3>
+                            <p>Keep your daily streak alive to earn coin rewards, XP boosts, and open mystery chests filled with rare unlockables.</p>
+                        </div>
+                    </div>
+
+                    <!-- Offline Privacy -->
+                    <div class="col-md-12">
+                        <div class="feature-card">
+                            <h3><i class="bi bi-shield-lock text-warning me-2"></i> Play Anywhere, 100% Offline</h3>
+                            <p>No accounts, no sign-ups, no passwords, and no cloud dependency. All game state stays local on your device.</p>
+                            <div class="footnote">
+                                <i class="bi bi-lock-fill"></i> Zero personal data collection by developer.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="steps-section">
+            <div class="container px-4">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">How to Play</h2>
+                    <p class="text-muted">Master the drop in four simple steps</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card">
+                            <div class="step-number">1</div>
+                            <h3>Drag Coin</h3>
+                            <p>Position your coin above the glass and line up your drop trajectory.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card">
+                            <div class="step-number">2</div>
+                            <h3>Release</h3>
+                            <p>Watch the coin fall and strike the floating object in real-time fluid physics.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card">
+                            <div class="step-number">3</div>
+                            <h3>Hold 5s</h3>
+                            <p>Keep the coin balanced in the winning zone for 5 seconds to claim victory.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card">
+                            <div class="step-number">4</div>
+                            <h3>Earn XP</h3>
+                            <p>Gain XP for every attempt, open chests, level up, and unlock new cosmetic items!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="py-5">
+            <div class="container px-4" style="max-width: 800px;">
+                <h2 class="fw-bold text-center mb-4">Frequently Asked Questions</h2>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                Do I need an account to play?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                No accounts, no emails, and no passwords required. Jump straight into the game instantly.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                Does the game work offline?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! CoinSplash is 100% offline-friendly. All your game progress and high scores stay securely on your device.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                What data does the app collect?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                The developer does not collect personal data directly. Minimal diagnostic data and purchase history are handled securely via AdMob and RevenueCat to serve ads and verify purchases.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                Are there any subscriptions or loot boxes?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Absolutely none. There are no monthly subscriptions, no paid loot boxes, and no paywalls blocking your gameplay.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container px-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <div class="small text-muted">&copy; 2026 PocketEngine Studio, LLC. All rights reserved.</div>
+                <div class="d-flex gap-4">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="mailto:develop@pocketenginestudio.com">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Interactive Canvas Water & Coin Physics Simulation
+        const canvas = document.getElementById('previewCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width || 300;
+            canvas.height = rect.height || 650;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let time = 0;
+        let coinDropTime = -10;
+        const dropDuration = 2.0;
+
+        canvas.addEventListener('click', () => {
+            if (time - coinDropTime > dropDuration) {
+                coinDropTime = time;
+            }
+        });
+
+        function animate(timestamp) {
+            time = timestamp / 1000;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Background gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bgGrad.addColorStop(0, '#232338');
+            bgGrad.addColorStop(1, '#1A1A2E');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const cx = canvas.width / 2;
+            const gx = cx - 75;
+            const gy = canvas.height * 0.32;
+            const gw = 150;
+            const gh = 260;
+            const waterY = gy + 110;
+
+            // Draw Water
+            ctx.beginPath();
+            ctx.moveTo(gx, waterY);
+            for (let x = gx; x <= gx + gw; x += 4) {
+                const u = (x - gx) / gw;
+                const wave = Math.sin(time * 2.5 + u * Math.PI * 3) * 3.5;
+                let dropEffect = 0;
+                const tau = time - coinDropTime;
+                if (tau >= 0 && tau < dropDuration) {
+                    const dist = Math.abs(x - cx);
+                    const front = tau * 90;
+                    dropEffect = Math.sin((dist - front) * 0.15) * 5 * Math.exp(-tau * 2.2) * Math.exp(-Math.pow(dist - front, 2) / 800);
+                }
+                ctx.lineTo(x, waterY + wave + dropEffect);
+            }
+            ctx.lineTo(gx + gw, gy + gh);
+            ctx.lineTo(gx, gy + gh);
+            ctx.closePath();
+
+            const waterGrad = ctx.createLinearGradient(0, waterY, 0, gy + gh);
+            waterGrad.addColorStop(0, 'rgba(79, 195, 247, 0.65)');
+            waterGrad.addColorStop(1, 'rgba(21, 101, 192, 0.85)');
+            ctx.fillStyle = waterGrad;
+            ctx.fill();
+
+            // Glass outline
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(gx, gy, gw, gh);
+
+            // Floating Orange
+            const tau = time - coinDropTime;
+            const impact = (tau >= 0 && tau < dropDuration) ? Math.exp(-tau * 3) * Math.sin(tau * 14) * 4 : 0;
+            const orangeY = waterY + Math.sin(time * 1.9) * 3.5 + impact;
+
+            ctx.beginPath();
+            ctx.arc(cx, orangeY, 26, 0, Math.PI * 2);
+            const orangeGrad = ctx.createRadialGradient(cx - 8, orangeY - 8, 4, cx, orangeY, 26);
+            orangeGrad.addColorStop(0, '#FFA726');
+            orangeGrad.addColorStop(1, '#EF6C00');
+            ctx.fillStyle = orangeGrad;
+            ctx.fill();
+            ctx.strokeStyle = '#E65100';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Coin calculation
+            const hoverY = gy + 35;
+            const restY = orangeY - 26 - 13;
+            let coinY = hoverY + Math.sin(time * 2.4) * 4;
+            let spin = 0;
+
+            if (tau >= 0 && tau <= dropDuration) {
+                const p = tau / dropDuration;
+                if (p < 0.35) {
+                    const q = p / 0.35;
+                    coinY = hoverY + (restY - hoverY) * q * q;
+                    spin = q * Math.PI * 3;
+                } else if (p < 0.5) {
+                    coinY = restY - Math.sin((p - 0.35) / 0.15 * Math.PI) * 12;
+                } else if (p < 0.75) {
+                    coinY = restY;
+                } else {
+                    const q = (p - 0.75) / 0.25;
+                    coinY = restY + (hoverY - restY) * q;
+                }
+            }
+
+            // Draw Coin
+            ctx.save();
+            ctx.translate(cx, coinY);
+            ctx.rotate(spin);
+            ctx.beginPath();
+            ctx.arc(0, 0, 13, 0, Math.PI * 2);
+            const coinGrad = ctx.createRadialGradient(-3, -3, 2, 0, 0, 13);
+            coinGrad.addColorStop(0, '#FFD54F');
+            coinGrad.addColorStop(1, '#FFB300');
+            ctx.fillStyle = coinGrad;
+            ctx.fill();
+            ctx.strokeStyle = '#FFF';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            // Tap prompt overlay
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+            ctx.font = '500 13px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Tap to drop coin', cx, canvas.height - 28);
+
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>
